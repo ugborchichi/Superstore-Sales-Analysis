@@ -1,190 +1,52 @@
-# Superstore Sales Analysis
+# Superstore Sales Analysis (SQL and Excel dashboard)
 
 ## Project Overview
 
-This project was carried out to demostrate SQL skills and techniques typically used as a Data Analyst to explore and analyse superstore sales dataset from 2011 till 2015. The project involves setting up a superstore database, creating a table and answering specific business questions through SQL queries. 
+The Superstore KPI Dashboard was designed to provide leadership with a centralized, data-driven view of business performance across critical retail metrics, including Sales, Profit, Quantity, and Discount.
 
-## Objectives
+Superstore operates nationwide across three core product categories—Technology, Office Supplies, and Furniture—with a diverse portfolio of products and a large customer base. As the business scaled, management required an interactive dashboard to consolidate performance tracking and support faster, more informed decision-making.
 
-1.  Data cleaning: Excel was used to clean the dataset set before exporting to SQL.
-2.  Set up a Sperstore database: Create and populate the superstore database with the provided sales data.
-3.  Exploratory Data Analysis: Perform basis exploratory data analysis to understand the dataset.
-4.  Busisness Analysis: Use   SQL to answer specific business questions and derive insights from the sales data.
+The dashboard delivers:
+
+-	A clear, at-a-glance view of overall performance
+
+-	Detailed analysis by product category, sub-category, and customer segment
+
+-	Visibility into customer-level contribution and profitability
+
+-	YoY and MoM comparisons between current and prior periods
+
+By transforming raw sales data into actionable insights, the dashboard enables executives and managers to identify growth opportunities, address performance gaps, and prioritize strategic initiatives effectively.
 
 ## Project Structure
 
-### 1.  Database and Table creation
+### Tools
 
-   -  The project starts by creating a database called ```superstore_db```
-   -  Table creation: The table named ```superstore``` is created to store the sales data. The table structure includes columns for row id, order id, order date, ship date, ship mode, customer id, customer name, segment, country, city, state, postal code, region, product id, category, sub-caregory, product name, sales quantity, discount and profit.
-``` sql
-DROP TABLE IF EXISTS Superstore;
- CREATE TABLE Superstore
- (
-	Row_ID int	PRIMARY KEY,
-	Order_ID varchar (20),
-	Order_Date varchar (15),
-	Ship_date varchar (15),
-	Ship_Mode varchar (20),
-	Customer_ID	varchar (10),
-	Customer_Name varchar (40),
-	Segment varchar (15),
-	Country varchar (15),
-	City varchar (20),
-	States varchar (20),
-	Postal_Code int,
-	Region varchar (15),
-	Product_ID varchar (20),
-	Category varchar (20),
-	Sub_Category varchar (15),
-	Product_Name varchar (140),
-	Sales float,
-	Quantity int,
-	Discount float,
-	Profit float
-	);
- ```
+-	Data Cleaning & Analysis - Postgres
 
-### 2.  Data Exploration
+-	Data Visualization - Excel
 
-   -  Determine the total number of recored in a dateset.
-   -  Identify all unique product category and sub category.
-   -  Check for any null value in the dataset and delete where necessary.
+### Business Questions
 
-  ```sql
-SELECT * FROM Superstore
-ORDER BY Row_id asc;
-
-SELECT DISTINCT category FROM superstore;
-
-SELECT DISTINCT sub_category FROM superstore;
-
-SELECT * FROM superstore
-	WHERE 
-	Row_ID IS null or
-	Order_ID is null or
-	Order_Date is null or
-	Ship_date is null or
-	Ship_Mode is null or
-	Customer_ID	is null or
-	Customer_Name is null or
-	Segment is null or
-	Country is null or
-	City is null or
-	States is null or
-	Postal_Code is null or
-	Region is null or
-	Product_ID is null or
-	Category is null or
-	Sub_Category is null or
-	Product_Name is null or
-	Sales is null or
-	Quantity is null or
-	Discount is null or
-	Profit is null;
-```
-### 3.  Data Analysis and Findings
-
-The following SQL queries were developed to answer some key business questions.
-
-1.  **What are the 5 key performance indicators
-```sql
-SELECT
-	SUM(sales) AS total_sales,
-	SUM(quantity) AS total_quantity,
-	SUM(profit) AS total_profit,
-	AVG(discount) AS avg_discount,
-	(SUM(profit) / SUM(sales)) * 100 AS profit_margin_pct,
-	ROUND(AVG(ship_date - order_date), 2) AS avg_delivery_days
-FROM superstore;
-```
-
-2.  **What is the total sales and quantity for each segment?
-```sql
-SELECT
-    segment,
-    SUM(sales)    AS total_sales,
-    SUM(quantity) AS total_quantity
-FROM superstore
-GROUP BY segment
-ORDER BY total_sales DESC;
-```
-
-3.  **What is the total sales for each region?
-```sql
-SELECT
-	region,
-	SUM(sales)	AS total_sales 
-FROM superstore
-GROUP BY region
-ORDER BY total_sales DESC;
-```
-
-4.  **what is the total sales and quantity for 2014 from January to December?
-```sql
-SELECT
-	EXTRACT(YEAR  FROM ship_date) AS year,
-    EXTRACT(MONTH FROM ship_date) AS month,
-	SUM(sales) AS total_sales,
-	SUM(quantity) AS total_quantity
-FROM superstore
-WHERE EXTRACT(YEAR FROM ship_date) = 2014
-GROUP BY 1, 2
-ORDER BY 2;
-```
-
-5.  **Find the top 10 states by total sales
-```sql
-SELECT
-	states,
-	SUM(sales)	AS total_sales 
-FROM superstore
-GROUP BY states
-ORDER BY total_sales DESC
-LIMIT 10;
-```
-
-6.  **Find the Bottom 10 states by sales
-```sql
-SELECT
-	states,
-	SUM(sales)	AS total_sales 
-FROM superstore
-GROUP BY states
-ORDER BY total_sales ASC
-LIMIT 10;
-```
-
-7. **What is the Avg shipping period by Region?
-```sql
-SELECT
-	region,
-	ROUND(AVG(ship_date - order_date), 2) AS avg_delivery_days
-FROM superstore
-GROUP BY region
-ORDER BY avg_delivery_days ASC;
-```
-
-8.  **What is the avg delivery days by ship mode?
-```sql
-SELECT
-	ship_mode,
-	AVG(ship_date - order_date) AS avg_delivery_days
-FROM superstore
-GROUP BY 1
-ORDER BY 2;
-```
-9.  **What products have not sold more than 3 units?
-```sql
-SELECT
-    product_name,
-    SUM(quantity) AS total_quantity
-FROM superstore
-GROUP BY product_name
-HAVING SUM(quantity) < 3
-ORDER BY total_quantity DESC;
-```
-
+1.	What is the total sales and quantity for each segment?
+2.	What is the total sales for each region?
+3.	Find the top 10 states by total sales
+4.	Find the Bottom 10 states by sales
+5.	What is the total sales by year?
+6.	What is the monthly trend by the years over sales?W
+7.	What is the total sales and quantity for 2014 from January to December?
+8.	Who are the 10 top customers by sale
+9.	Who are the 10 Bottom customers by sales
+10.	What is the avg shipping period for the ship mode
+11.	What is the total profit by category?
+12.	What are the top 10 products by quantity?
+13.	What are the Bottom 10 products by quantity?
+14.	Avg shipping period by Region
+15.	What is the average discount given by category?
+16.	What is the avg delivery days by ship mode?
+17.	What is the total profit by category?
+18.	What products have not sold more than 3 units?
+    
 ## Key Insights
 
 -  Sales growth was modest between 2011 and 2012, followed by a strong acceleration in 2013 from 2% to 26% growth rate and sustained high growth into 2014, indicating successful expansion and increased demand in later years.
